@@ -49,7 +49,7 @@ class Photo < ApplicationRecord
     return matching_comments
   end
 
-  has_many(:likes, class_name: "Like", foreign_key: "photo_id")
+  has_many(:likes, class_name: "Like", foreign_key: "photo_id") #think this is belongs to, one photo has many likes not vice versa
   def likes
     my_id = self.id
 
@@ -58,7 +58,6 @@ class Photo < ApplicationRecord
     return matching_likes
   end
 
-  has_many(:likes)
   has_many(:fans, through: :likes, source: :fan)
   def fans
     my_likes = self.likes

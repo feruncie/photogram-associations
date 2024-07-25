@@ -21,15 +21,15 @@ class User < ApplicationRecord
   
   ## Direct associations
 
-  # User#comments: returns rows from the comments table associated to this user by the author_id column
+  # User#comments: returns rows from the comments table associated to this user by the author_id column DONE
+ 
+  # User#own_photos: returns rows from the photos table  associated to this user by the owner_id column DONE
 
-  # User#own_photos: returns rows from the photos table  associated to this user by the owner_id column
+  # User#likes: returns rows from the likes table associated to this user by the fan_id column DONE
 
-  # User#likes: returns rows from the likes table associated to this user by the fan_id column
+  # User#sent_follow_requests: returns rows from the follow requests table associated to this user by the sender_id column DONE
 
-  # User#sent_follow_requests: returns rows from the follow requests table associated to this user by the sender_id column
-
-  # User#received_follow_requests: returns rows from the follow requests table associated to this user by the recipient_id column
+  # User#received_follow_requests: returns rows from the follow requests table associated to this user by the recipient_id column DONE
 
 
   ### Scoped direct associations
@@ -56,6 +56,8 @@ class User < ApplicationRecord
 
   # User#discover: returns rows from the photos table associated to this user through its leaders (the leaders' liked_photos)
 
+
+  has_many(:comments, class_name: "Comment", foreign_key: "author_id")
   def comments
     my_id = self.id
 
@@ -64,6 +66,7 @@ class User < ApplicationRecord
     return matching_comments
   end
 
+  has_many(:own_photos, class_name: "Photo", foreign_key: "owner_id")
   def own_photos
     my_id = self.id
 
@@ -72,6 +75,7 @@ class User < ApplicationRecord
     return matching_photos
   end
 
+  has_many(:likes, class_name: "Like", foreign_key: "fan_id")
   def likes
     my_id = self.id
 
@@ -80,6 +84,8 @@ class User < ApplicationRecord
     return matching_likes
   end
 
+
+  has_many(:liked_photos, through: :likes, source: :photo)
   def liked_photos
     my_likes = self.likes
     
@@ -94,6 +100,8 @@ class User < ApplicationRecord
     return matching_photos
   end
 
+
+  has_many(:commented_photos, through: :comments, source: :photo)
   def commented_photos
     my_comments = self.comments
     
@@ -110,6 +118,7 @@ class User < ApplicationRecord
     return unique_matching_photos
   end
 
+  has_many(:sent_follow_requests, class_name: "FollowRequest", foreign_key: "sender_id")
   def sent_follow_requests
     my_id = self.id
 
@@ -118,6 +127,7 @@ class User < ApplicationRecord
     return matching_follow_requests
   end
 
+  has_many(:received_follow_requests, class_name: "FollowRequest", foreign_key: "recipient_id")
   def received_follow_requests
     my_id = self.id
 
